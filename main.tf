@@ -20,13 +20,13 @@ variable "secret_key" {
 provider "aws" {
   access_key = var.access_key
   secret_key = var.secret_key
-  region     = "us-west-2"
+  region     = "eu-north-1"
 }
 
 
 resource "aws_instance" "app_server" {
-  ami           = "ami-830c94e3"
-  instance_type = "t2.micro"
+  ami           = "ami-09c6deea99698a37b"
+  instance_type = "t3.micro"
 
   tags = {
     Name = "ExampleAppServerInstance"
