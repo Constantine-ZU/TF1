@@ -79,14 +79,16 @@ resource "aws_instance" "example_instance" {
 resource "aws_ebs_volume" "example_ebs_volume" {
   availability_zone = "${aws_instance.example_instance.availability_zone}"
   snapshot_id       = "snap-0f7fd5fdfe49bf1c2"
+  volume_type       = "gp3"  # Ensure this is set correctly
   size              = 10
-  iops              = 3000
+  iops              = 3000   # Appropriate for 'gp3'
   throughput        = 125
 
   tags = {
     Name = "Additional EBS Volume"
   }
 }
+
 
 resource "aws_volume_attachment" "ebs_attachment" {
   device_name  = "/dev/sdh"
