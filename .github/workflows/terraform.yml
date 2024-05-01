@@ -1,4 +1,4 @@
-name: 'Terraform Deploy'
+name: Terraform Deploy
 
 on:
   push:
@@ -23,9 +23,12 @@ jobs:
 
     - name: Terraform Plan
       run: terraform plan
+      env:
+        TF_VAR_ACCESS_KEY: ${{ secrets.TF_VAR_ACCESS_KEY }}
+        TF_VAR_SECRET_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
 
     - name: Terraform Apply
       run: terraform apply -auto-approve
       env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.TF_VAR_ACCESS_KEY }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
+        TF_VAR_ACCESS_KEY: ${{ secrets.TF_VAR_ACCESS_KEY }}
+        TF_VAR_SECRET_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
