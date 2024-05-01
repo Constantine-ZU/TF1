@@ -24,7 +24,7 @@ provider "aws" {
 }
 
 
-# Security Group with specific ingress rules
+# Security Group definition
 resource "aws_security_group" "launch_wizard_sg" {
   name        = "launch-wizard-2"
   description = "launch-wizard-2 created 2024-05-01T18:19:45.244Z"
@@ -43,10 +43,6 @@ resource "aws_security_group" "launch_wizard_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
-  tags = {
-    Name = "Launch Wizard SG"
-  }
 }
 
 # EC2 Instance
@@ -63,32 +59,21 @@ resource "aws_instance" "example_instance" {
     delete_on_termination = true
     encrypted             = false
   }
-
-  metadata_options {
-    http_endpoint               = "enabled"
-    http_put_response_hop_limit = 2
-    http_tokens                 = "required"
-  }
-
-  tags = {
-    Name = "Example EC2 Instance"
-  }
 }
 
-# Additional EBS volume from snapshot
+# EBS Volume from snapshot
 resource "aws_ebs_volume" "example_ebs_volume" {
-  availability_zone = "${aws_instance.example_instance.availability_zone}"
+  availability_zone = aws_instance.example_instance.availability_zone
   snapshot_id       = "snap-0f7fd5fdfe49bf1c2"
-  volume_type       = "gp3"  # Ensure this is set correctly
+  type              = "gp3"  # Correct attribute name for volume type
   size              = 10
-  iops              = 3000   # Appropriate for 'gp3'
-  throughput        = 125
+  iops              = 3000   # Correct for gp3 when size is 10 GiB or larger
+  throughput        = 125    # Also correct for gp3
 
   tags = {
     Name = "Additional EBS Volume"
   }
 }
-
 
 resource "aws_volume_attachment" "ebs_attachment" {
   device_name  = "/dev/sdh"
