@@ -23,7 +23,6 @@ provider "aws" {
   region     = "eu-north-1"
 }
 
-
 # Security Group definition
 resource "aws_security_group" "launch_wizard_sg" {
   name        = "launch-wizard-2"
@@ -61,17 +60,45 @@ resource "aws_instance" "example_instance" {
   }
 }
 
-# EBS Volume from snapshot
-resource "aws_ebs_volume" "example_ebs_volume" {
+# Initial EBS Volume for Snapshot
+resource "aws_ebs_volume" "initial_ebs_volume" {
   availability_zone = aws_instance.example_instance.availability_zone
-  snapshot_id       = "snap-0f7fd5fdfe49bf1c2"
-  type              = "gp3"  # Correct attribute name for volume type
   size              = 10
-  iops              = 3000   # Correct for gp3 when size is 10 GiB or larger
-  throughput        = 125    # Also correct for gp3
+  type              = "gp3"
+  iops              = 3000
+  throughput        = 125
 
   tags = {
-    Name = "Additional EBS Volume"
+    Name = "Initial EBS Volume"
+  }
+}
+
+resource "aws_volume_attachment" "initial_volume_attachment" {
+  device_name  = "/dev/sdf"
+  volume_id    = aws_ebs_volume.initial_ebs_volume.id
+  instance_id  = aws_instance.example_instance.id
+}
+
+# Snapshot of the Initial EBS Volume
+resource "aws_ebs_snapshot" "initial_ebs_snapshot" {
+  volume_id = aws_ebs_volume.initial_ebs_volume.id
+
+  tags = {
+    Name = "Snapshot of Initial EBS Volume"
+  }
+}
+
+# EBS Volume from created snapshot
+resource "aws_ebs_volume" "example_ebs_volume" {
+  availability_zone = aws_instance.example_instance.availability_zone
+  snapshot_id       = aws_ebs_snapshot.initial_ebs_snapshot.id
+  type              = "gp3"
+  size              = 10
+  iops              = 3000
+  throughput        = 125
+
+  tags = {
+    Name = "EBS Volume from Snapshot"
   }
 }
 
