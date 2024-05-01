@@ -22,17 +22,44 @@ provider "aws" {
   region     = "eu-north-1"
 }
 
-# Security Group for EC2 instance
-resource "aws_security_group" "launch_wizard_sg" {
+resource "aws_vpc" "default" {
+  cidr_block = "10.0.0.0/16"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
+  tags = {
+    Name = "defaultVPC"
+  }
+}
+
+resource "aws_subnet" "default" {
+  vpc_id            = aws_vpc.default.id
+  cidr_block        = "10.0.1.0/24"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "defaultSubnet"
+  }
+}
+
+resource "aws_internet_gateway" "default" {
+  vpc_id = aws_vpc.default.id
+
+  tags = {
+    Name = "defaultIGW"
+  }
+}
+
+resource "aws_security_group" "launch_wizard" {
   name        = "launch-wizard"
-  description = "launch-wizard created 2024-05-01T19:01:58.158Z"
-  vpc_id      = "vpc-0c4bcc31755a8df93"
+  description = "launch-wizard security group for EC2 instance"
+  vpc_id      = aws_vpc.default.id
 
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["213.149.169.233/32"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -43,43 +70,16 @@ resource "aws_security_group" "launch_wizard_sg" {
   }
 }
 
-# EC2 Instance with specific configurations
-resource "aws_instance" "example_instance" {
-  ami           = "ami-03035978b5aeb1274"
-  instance_type = "t3.micro"
-  key_name      = "pair-key"
-  ebs_optimized = true
-  security_groups = [aws_security_group.launch_wizard_sg.id]
+resource "aws_instance" "example" {
+  ami                     = "ami-03035978b5aeb1274"
+  instance_type           = "t3.micro"
+  key_name                = "pair-key"
+  subnet_id               = aws_subnet.default.id
+  vpc_security_group_ids  = [aws_security_group.launch_wizard.id]
+  associate_public_ip_address = true
 
-  root_block_device {
-    volume_size           = 10
-    delete_on_termination = true
-    encrypted             = false
-    volume_type           = "gp3"
-    iops                  = 3000
-    throughput            = 125
-  }
-
-  metadata_options {
-    http_endpoint               = "enabled"
-    http_put_response_hop_limit = 2
-    http_tokens                 = "required"
-  }
-
-  private_dns_name_options {
-    hostname_type                 = "ip-name"
-    enable_resource_name_dns_a_record    = true
-    enable_resource_name_dns_aaaa_record = false
+  tags = {
+    Name = "MyExampleInstance"
   }
 }
 
-# Network interface setup (using a separate resource if needed for more customization)
-resource "aws_network_interface" "primary_nic" {
-  subnet_id       = "<your_subnet_id_here>"  # Specify your subnet ID
-  security_groups = [aws_security_group.launch_wizard_sg.id]
-
-  attachment {
-    instance     = aws_instance.example_instance.id
-    device_index = 0
-  }
-}
