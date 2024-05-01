@@ -20,6 +20,11 @@ jobs:
 
     - name: Terraform Init
       run: terraform init
+    
+    - name: Debug Secrets
+      run: |
+        echo "TF_VAR_ACCESS_KEY: $TF_VAR_ACCESS_KEY"
+        echo "TF_VAR_SECRET_KEY: $TF_VAR_SECRET_KEY"
 
     - name: Terraform Plan
       run: terraform plan
