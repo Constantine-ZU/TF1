@@ -19,9 +19,9 @@ variable "TF_VAR_SECRET_KEY" {
 
 
 provider "aws" {
-    access_key = var.TF_VAR_ACCESS_KEY
+  access_key = var.TF_VAR_ACCESS_KEY
   secret_key = var.TF_VAR_SECRET_KEY
-  region = "eu-north-1"
+  region     = "eu-north-1"
 }
 
 resource "aws_instance" "app_server" {
