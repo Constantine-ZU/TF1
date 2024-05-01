@@ -1,0 +1,31 @@
+name: 'Terraform Deploy'
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: "1.1.0"
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Plan
+      run: terraform plan
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve
+      env:
+        TF_VAR_secret_key: ${{ secrets.TF_VAR_SECRET_KEY }}
+        TF_VAR_access_key: ${{ secrets.TF_VAR_ACCESS_KEY }}
