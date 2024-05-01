@@ -5,7 +5,6 @@ terraform {
       version = "~> 4.16"
     }
   }
-
   required_version = ">= 1.2.0"
 }
 
@@ -23,10 +22,10 @@ provider "aws" {
   region     = "eu-north-1"
 }
 
-# Security Group definition
+# Security Group for EC2 instance
 resource "aws_security_group" "launch_wizard_sg" {
-  name        = "launch-wizard-2"
-  description = "launch-wizard-2 created 2024-05-01T18:19:45.244Z"
+  name        = "launch-wizard"
+  description = "launch-wizard created 2024-05-01T19:01:58.158Z"
   vpc_id      = "vpc-0c4bcc31755a8df93"
 
   ingress {
@@ -44,66 +43,43 @@ resource "aws_security_group" "launch_wizard_sg" {
   }
 }
 
-# EC2 Instance
+# EC2 Instance with specific configurations
 resource "aws_instance" "example_instance" {
-  ami                        = "ami-03035978b5aeb1274"
-  instance_type              = "t3.micro"
-  key_name                   = "pair-key"
-  ebs_optimized              = true
-  associate_public_ip_address = true
-  security_groups            = [aws_security_group.launch_wizard_sg.name]
+  ami           = "ami-03035978b5aeb1274"
+  instance_type = "t3.micro"
+  key_name      = "pair-key"
+  ebs_optimized = true
+  security_groups = [aws_security_group.launch_wizard_sg.id]
 
   root_block_device {
     volume_size           = 10
     delete_on_termination = true
     encrypted             = false
+    volume_type           = "gp3"
+    iops                  = 3000
+    throughput            = 125
+  }
+
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_put_response_hop_limit = 2
+    http_tokens                 = "required"
+  }
+
+  private_dns_name_options {
+    hostname_type                 = "ip-name"
+    enable_resource_name_dns_a_record    = true
+    enable_resource_name_dns_aaaa_record = false
   }
 }
 
-# Initial EBS Volume for Snapshot
-resource "aws_ebs_volume" "initial_ebs_volume" {
-  availability_zone = aws_instance.example_instance.availability_zone
-  size              = 10
-  type              = "gp3"
-  iops              = 3000
-  throughput        = 125
+# Network interface setup (using a separate resource if needed for more customization)
+resource "aws_network_interface" "primary_nic" {
+  subnet_id       = "<your_subnet_id_here>"  # Specify your subnet ID
+  security_groups = [aws_security_group.launch_wizard_sg.id]
 
-  tags = {
-    Name = "Initial EBS Volume"
+  attachment {
+    instance     = aws_instance.example_instance.id
+    device_index = 0
   }
-}
-
-resource "aws_volume_attachment" "initial_volume_attachment" {
-  device_name  = "/dev/sdf"
-  volume_id    = aws_ebs_volume.initial_ebs_volume.id
-  instance_id  = aws_instance.example_instance.id
-}
-
-# Snapshot of the Initial EBS Volume
-resource "aws_ebs_snapshot" "initial_ebs_snapshot" {
-  volume_id = aws_ebs_volume.initial_ebs_volume.id
-
-  tags = {
-    Name = "Snapshot of Initial EBS Volume"
-  }
-}
-
-# EBS Volume from created snapshot
-resource "aws_ebs_volume" "example_ebs_volume" {
-  availability_zone = aws_instance.example_instance.availability_zone
-  snapshot_id       = aws_ebs_snapshot.initial_ebs_snapshot.id
-  type              = "gp3"
-  size              = 10
-  iops              = 3000
-  throughput        = 125
-
-  tags = {
-    Name = "EBS Volume from Snapshot"
-  }
-}
-
-resource "aws_volume_attachment" "ebs_attachment" {
-  device_name  = "/dev/sdh"
-  volume_id    = aws_ebs_volume.example_ebs_volume.id
-  instance_id  = aws_instance.example_instance.id
 }
