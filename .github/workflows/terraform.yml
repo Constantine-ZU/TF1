@@ -25,6 +25,9 @@ jobs:
       run: |
         echo "TF_VAR_ACCESS_KEY: $TF_VAR_ACCESS_KEY"
         echo "TF_VAR_SECRET_KEY: $TF_VAR_SECRET_KEY"
+      env:
+          TF_VAR_ACCESS_KEY: ${{ secrets.TF_VAR_ACCESS_KEY }}
+          TF_VAR_SECRET_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
 
     - name: Terraform Plan
       run: terraform plan
