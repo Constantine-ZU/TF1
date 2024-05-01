@@ -59,7 +59,6 @@ resource "aws_instance" "example_instance" {
   security_groups            = [aws_security_group.launch_wizard_sg.name]
 
   root_block_device {
-    device_name           = "/dev/sda1"
     volume_size           = 10
     delete_on_termination = true
     encrypted             = false
