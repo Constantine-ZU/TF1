@@ -23,6 +23,9 @@ jobs:
 
     - name: Terraform Init
       run: terraform init
+      env:
+        TF_VAR_access_key: ${{ secrets.TF_VAR_ACCESS_KEY }}
+        TF_VAR_secret_key: ${{ secrets.TF_VAR_SECRET_KEY }}
     
     - name: Debug
       run: |
@@ -31,8 +34,7 @@ jobs:
       env:
         # AWS_ACCESS_KEY_ID: ${{ secrets.TF_VAR_ACCESS_KEY }}
         # AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
-        TF_VAR_access_key: ${{ secrets.TF_VAR_ACCESS_KEY }}
-        TF_VAR_secret_key: ${{ secrets.TF_VAR_SECRET_KEY }}
+
         TF_VAR_TEST: "aaaaa"
 
     - name: Terraform Plan
