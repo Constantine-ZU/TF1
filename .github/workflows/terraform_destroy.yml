@@ -2,6 +2,20 @@ name: Terraform Destroy
 
 on:
   workflow_dispatch:
+    inputs:
+      command:
+        type: choice
+        description: terraform command
+        default: plan
+        options:
+          - plan
+          - destroy
+env:
+  TF_VAR_access_key: ${{ secrets.TF_VAR_ACCESS_KEY }}
+  TF_VAR_secret_key: ${{ secrets.TF_VAR_SECRET_KEY }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.TF_VAR_ACCESS_KEY }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
+  command:    ${{ github.event.inputs.command }}
 
 jobs:
   terraform:
@@ -18,20 +32,34 @@ jobs:
     #   with:
     #     terraform_version: "1.2.0"
 
-    - name: Terraform Init
-      run: terraform init
-      env:
-        TF_VAR_access_key: ${{ secrets.TF_VAR_ACCESS_KEY }}
-        TF_VAR_secret_key: ${{ secrets.TF_VAR_SECRET_KEY }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.TF_VAR_ACCESS_KEY }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
+    # - name: Terraform Init
+    #   run: terraform init
+
+    - name: Terraform Run
+      run: |
+        echo "INFO: started by ${actor}"
+        echo "INFO: start $(date -u)"
+        echo "RUN: terraform init"
+        terraform init
+
+        echo "RUN: terraform fmt -check"
+        terraform fmt -check
+
+        echo "RUN: terraform validate"
+        terraform validate
+        
+        [[ "$command" == "plan" ]] && \
+        echo "RUN: terraform plan" && \
+        terraform plan
+    
+        [[ "$command" == "destroy" ]] && \
+        echo "RUN: terraform destroy " && \
+        terraform destroy -auto-approve
     
 
-   
-
-    - name: Terraform destroy
-      run: terraform destroy -auto-approve
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.TF_VAR_ACCESS_KEY }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
+    # - name: terraform ${{ github.event.inputs.command }}
+    #   run: terraform destroy -auto-approve
+    #   env:
+    #     AWS_ACCESS_KEY_ID: ${{ secrets.TF_VAR_ACCESS_KEY }}
+    #     AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
 
