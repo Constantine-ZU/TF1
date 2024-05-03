@@ -29,8 +29,8 @@ jobs:
 
    
 
-    - name: Terraform Destroy
-      run: terraform Destroy -auto-approve
+    - name: Terraform destroy
+      run: terraform destroy -auto-approve
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.TF_VAR_ACCESS_KEY }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
