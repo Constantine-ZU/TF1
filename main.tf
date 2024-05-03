@@ -8,17 +8,12 @@ terraform {
   required_version = ">= 1.2.0"
 }
 
-variable "access_key" {
-  description = "AWS Access Key ID"
-}
 
-variable "secret_key" {
-  description = "AWS Secret Access Key"
-}
 
 provider "aws" {
-  access_key = var.access_key
-  secret_key = var.secret_key
+  #access_key = var.access_key
+  #secret_key = var.secret_key
+
   region     = "eu-north-1"
 }
 
