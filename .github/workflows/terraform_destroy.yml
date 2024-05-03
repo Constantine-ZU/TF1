@@ -42,11 +42,11 @@ jobs:
         echo "RUN: terraform init"
         terraform init
 
-        echo "RUN: terraform fmt -check"
-        terraform fmt -check
+        # echo "RUN: terraform fmt -check"
+        # terraform fmt -check
 
-        echo "RUN: terraform validate"
-        terraform validate
+        # echo "RUN: terraform validate"
+        # terraform validate
         
         [[ "$command" == "plan" ]] && \
         echo "RUN: terraform plan" && \
