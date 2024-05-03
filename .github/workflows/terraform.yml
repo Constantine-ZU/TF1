@@ -13,10 +13,13 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v2
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
-      with:
-        terraform_version: "1.2.0"
+    - name: Terraform Setup
+      uses: hashicorp/setup-terraform@v2.0.2
+
+    # - name: Setup Terraform
+    #   uses: hashicorp/setup-terraform@v1
+    #   with:
+    #     terraform_version: "1.2.0"
 
     - name: Terraform Init
       run: terraform init
@@ -26,24 +29,24 @@ jobs:
         echo "TF_VAR_ACCESS_KEY: $TF_VAR_access_key"
         echo "TF_VAR_SECRET_KEY: $TF_VAR_secret_key"
       env:
-        # AWS_ACCESS_KEY_ID: ${{ secrets.TF_VAR_ACCESS_KEY }}
-        # AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
-        TF_VAR_access_key: ${{ secrets.TF_VAR_ACCESS_KEY }}
-        TF_VAR_secret_key: ${{ secrets.TF_VAR_SECRET_KEY }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.TF_VAR_ACCESS_KEY }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
+        # TF_VAR_access_key: ${{ secrets.TF_VAR_ACCESS_KEY }}
+        # TF_VAR_secret_key: ${{ secrets.TF_VAR_SECRET_KEY }}
         TEST: "aaaaa"
 
     - name: Terraform Plan
       run: terraform plan
       env:
-        # AWS_ACCESS_KEY_ID: ${{ secrets.TF_VAR_ACCESS_KEY }}
-        # AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
-        TF_VAR_access_key: ${{ secrets.TF_VAR_ACCESS_KEY }}
-        TF_VAR_secret_key: ${{ secrets.TF_VAR_SECRET_KEY }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.TF_VAR_ACCESS_KEY }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
+        # TF_VAR_access_key: ${{ secrets.TF_VAR_ACCESS_KEY }}
+        # TF_VAR_secret_key: ${{ secrets.TF_VAR_SECRET_KEY }}
 
     - name: Terraform Apply
       run: terraform apply -auto-approve
       env:
-        # AWS_ACCESS_KEY_ID: ${{ secrets.TF_VAR_ACCESS_KEY }}
-        # AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
-        TF_VAR_access_key: ${{ secrets.TF_VAR_ACCESS_KEY }}
-        TF_VAR_secret_key: ${{ secrets.TF_VAR_SECRET_KEY }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.TF_VAR_ACCESS_KEY }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
+        # TF_VAR_access_key: ${{ secrets.TF_VAR_ACCESS_KEY }}
+        # TF_VAR_secret_key: ${{ secrets.TF_VAR_SECRET_KEY }}
