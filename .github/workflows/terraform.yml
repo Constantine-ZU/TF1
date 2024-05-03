@@ -23,21 +23,27 @@ jobs:
     
     - name: Debug
       run: |
-        echo "TF_VAR_ACCESS_KEY: $AWS_ACCESS_KEY_ID"
-        echo "TF_VAR_SECRET_KEY: $AWS_SECRET_ACCESS_KEY"
+        echo "TF_VAR_ACCESS_KEY: $TF_VAR_access_key"
+        echo "TF_VAR_SECRET_KEY: $TF_VAR_secret_key"
       env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.TF_VAR_ACCESS_KEY }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
+        # AWS_ACCESS_KEY_ID: ${{ secrets.TF_VAR_ACCESS_KEY }}
+        # AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
+        TF_VAR_access_key: ${{ secrets.TF_VAR_ACCESS_KEY }}
+        TF_VAR_secret_key: ${{ secrets.TF_VAR_SECRET_KEY }}
         TEST: "aaaaa"
 
     - name: Terraform Plan
       run: terraform plan
       env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.TF_VAR_ACCESS_KEY }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
+        # AWS_ACCESS_KEY_ID: ${{ secrets.TF_VAR_ACCESS_KEY }}
+        # AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
+        TF_VAR_access_key: ${{ secrets.TF_VAR_ACCESS_KEY }}
+        TF_VAR_secret_key: ${{ secrets.TF_VAR_SECRET_KEY }}
 
     - name: Terraform Apply
       run: terraform apply -auto-approve
       env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.TF_VAR_ACCESS_KEY }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
+        # AWS_ACCESS_KEY_ID: ${{ secrets.TF_VAR_ACCESS_KEY }}
+        # AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
+        TF_VAR_access_key: ${{ secrets.TF_VAR_ACCESS_KEY }}
+        TF_VAR_secret_key: ${{ secrets.TF_VAR_SECRET_KEY }}
