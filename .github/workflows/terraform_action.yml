@@ -1,4 +1,4 @@
-name: Terraform Destroy
+name: Terraform Chouse Action
 
 on:
   workflow_dispatch:
@@ -9,6 +9,7 @@ on:
         default: plan
         options:
           - plan
+          - apply
           - destroy
 env:
   TF_VAR_access_key: ${{ secrets.TF_VAR_ACCESS_KEY }}
@@ -55,7 +56,10 @@ jobs:
         [[ "$command" == "destroy" ]] && \
         echo "RUN: terraform destroy " && \
         terraform destroy -auto-approve
-    
+
+        [[ "$command" == "apply" ]] && \
+        echo "RUN: terraform apply -input=false" && \
+        terraform apply -input=false -auto-approve
 
     # - name: terraform ${{ github.event.inputs.command }}
     #   run: terraform destroy -auto-approve
