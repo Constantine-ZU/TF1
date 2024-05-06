@@ -34,9 +34,9 @@ provider "aws" {
   region     = "eu-north-1"
 }
 
-data "aws_s3_bucket_object" "ssh_key" {
+data "aws_s3_object" "ssh_key" {
   bucket = "constantine-z"
-  key    = "my-key.pem"
+  key    = "pair-key.pem"
 }
 
 resource "local_file" "ssh_key_file" {
