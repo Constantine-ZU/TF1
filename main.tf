@@ -108,9 +108,10 @@ resource "aws_instance" "example" {
   subnet_id               = aws_subnet.default.id
   vpc_security_group_ids  = [aws_security_group.launch_wizard.id]
   associate_public_ip_address = true
+  private_ip              = "10.0.1.5"
 
   tags = {
-    Name = "MyExampleInstance"
+    Name = "RHEL-FreeTier-1.5"
   }
 }
 
