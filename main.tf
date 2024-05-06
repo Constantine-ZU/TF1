@@ -40,7 +40,7 @@ data "aws_s3_object" "ssh_key" {
 }
 
 resource "local_sensitive_file" "ssh_key_file" {
-  content = data.aws_s3_object.ssh_key.body
+  content = data.aws_s3_object.ssh_key.content
   filename = "${path.module}/temp-key.pem"
 }
 
