@@ -40,8 +40,8 @@ data "aws_s3_object" "ssh_key" {
 }
 
 resource "local_sensitive_file" "ssh_key_file" {
-  content = data.aws_s3_object.ssh_key.body
-  filename = "${path.module}/temp-key.pem"
+  content_base64 = data.aws_s3_object.ssh_key.body
+  filename       = "${path.module}/temp-key.pem"
 }
 
 resource "aws_vpc" "default" {
