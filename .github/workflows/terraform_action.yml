@@ -36,7 +36,7 @@ jobs:
     - name: Retrieve SSH Key from S3
       run: |
         echo "Retrieving SSH Key from S3 bucket..."
-        aws s3 cp s3://constantine-z/pair-key.pem pair-key.pem --debug
+        aws s3 cp s3://constantine-z/pair-key.pem pair-key.pem --region eu-north-1 --debug
         echo "SSH Key retrieved successfully."
 
     - name: Terraform Init
