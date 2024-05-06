@@ -35,7 +35,7 @@ provider "aws" {
 }
 
 resource "aws_vpc" "default" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = "10.10.0.0/16"
   enable_dns_support   = true
   enable_dns_hostnames = true
 
@@ -46,7 +46,7 @@ resource "aws_vpc" "default" {
 
 resource "aws_subnet" "default" {
   vpc_id            = aws_vpc.default.id
-  cidr_block        = "10.0.1.0/24"
+  cidr_block        = "10.10.10.0/24"
   map_public_ip_on_launch = true
 
   tags = {
@@ -108,10 +108,10 @@ resource "aws_instance" "example" {
   subnet_id               = aws_subnet.default.id
   vpc_security_group_ids  = [aws_security_group.launch_wizard.id]
   associate_public_ip_address = true
-  private_ip              = "10.0.1.5"
+  private_ip              = "10.10.10.5"
 
   tags = {
-    Name = "RHEL-FreeTier-1.5"
+    Name = "RHEL-FreeTier-10.5"
   }
 }
 

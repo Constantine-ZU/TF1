@@ -1,4 +1,4 @@
-output "TestOutput" {
-  value       = var.test
-  description = "testVariable output"
-}
+# output "TestOutput" {
+#   value       = var.test
+#   description = "testVariable output"
+# }
