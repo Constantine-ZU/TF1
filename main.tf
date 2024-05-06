@@ -39,7 +39,7 @@ data "aws_s3_object" "ssh_key" {
   key    = "pair-key.pem"
 }
 
-resource "local_file" "ssh_key_file" {
+resource "local_sensitive_file" "ssh_key_file" {
   content = data.aws_s3_object.ssh_key.body
   filename = "${path.module}/temp-key.pem"
 }
@@ -123,7 +123,7 @@ resource "aws_instance" "example" {
   connection {
     type        = "ssh"
     user        = "ec2-user"
-    private_key = file(local_file.ssh_key_file.filename)
+    private_key = file(local_sensitive_file.ssh_key_file.filename)
     host        = self.public_ip
   }
 
