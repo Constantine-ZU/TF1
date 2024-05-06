@@ -18,6 +18,7 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
   command:    ${{ github.event.inputs.command }}
 
+ 
 jobs:
   terraform:
     runs-on: ubuntu-latest
@@ -32,9 +33,17 @@ jobs:
     #   uses: hashicorp/setup-terraform@v1
     #   with:
     #     terraform_version: "1.2.0"
-
-    # - name: Terraform Init
-    #   run: terraform init
+    - name: Retrieve SSH Key from S3
+      run: |
+        echo "Retrieving SSH Key from S3 bucket..."
+        aws s3 cp s3://constantine-z/pair-key.pem pair-key.pem
+        echo "SSH Key retrieved successfully."
+        
+    - name: Terraform Init
+      run: |
+        echo "INFO: started by ${{ github.actor }}"
+        echo "INFO: start $(date -u)"
+        terraform init
 
     - name: Terraform Run
       run: |

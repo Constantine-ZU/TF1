@@ -34,15 +34,15 @@ provider "aws" {
   region     = "eu-north-1"
 }
 
-data "aws_s3_object" "ssh_key" {
-  bucket = "constantine-z"
-  key    = "pair-key.pem"
-}
+# data "aws_s3_object" "ssh_key" {
+#   bucket = "constantine-z"
+#   key    = "pair-key.pem"
+# }
 
-resource "local_sensitive_file" "ssh_key_file" {
-  content_base64 = data.aws_s3_object.ssh_key.body
-  filename       = "${path.module}/temp-key.pem"
-}
+# resource "local_sensitive_file" "ssh_key_file" {
+#   content_base64 = data.aws_s3_object.ssh_key.body
+#   filename       = "${path.module}/temp-key.pem"
+# }
 
 resource "aws_vpc" "default" {
   cidr_block = "10.10.0.0/16"
@@ -123,7 +123,7 @@ resource "aws_instance" "example" {
   connection {
     type        = "ssh"
     user        = "ec2-user"
-    private_key = file(local_sensitive_file.ssh_key_file.filename)
+    private_key = file("${path.module}/pair-key.pem")  # Путь к ключу в контексте GitHub Actions
     host        = self.public_ip
   }
 
