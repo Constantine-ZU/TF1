@@ -36,9 +36,9 @@ jobs:
     - name: Retrieve SSH Key from S3
       run: |
         echo "Retrieving SSH Key from S3 bucket..."
-        aws s3 cp s3://constantine-z/pair-key.pem pair-key.pem
+        aws s3 cp s3://constantine-z/pair-key.pem pair-key.pem --debug
         echo "SSH Key retrieved successfully."
-        
+
     - name: Terraform Init
       run: |
         echo "INFO: started by ${{ github.actor }}"
