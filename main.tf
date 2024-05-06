@@ -34,6 +34,16 @@ provider "aws" {
   region     = "eu-north-1"
 }
 
+data "aws_s3_bucket_object" "ssh_key" {
+  bucket = "constantine-z"
+  key    = "my-key.pem"
+}
+
+resource "local_file" "ssh_key_file" {
+  content  = data.aws_s3_bucket_object.ssh_key.body
+  filename = "${path.module}/temp-key.pem"
+}
+
 resource "aws_vpc" "default" {
   cidr_block = "10.10.0.0/16"
   enable_dns_support   = true
@@ -109,6 +119,19 @@ resource "aws_instance" "example" {
   vpc_security_group_ids  = [aws_security_group.launch_wizard.id]
   associate_public_ip_address = true
   private_ip              = "10.10.10.5"
+
+  connection {
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = file(local_file.ssh_key_file.filename)
+    host        = self.public_ip
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo dnf install -y dotnet-sdk-8.0"
+    ]
+  }
 
   tags = {
     Name = "RHEL-FreeTier-10.5"
