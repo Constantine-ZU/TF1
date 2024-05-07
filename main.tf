@@ -157,27 +157,13 @@ resource "aws_instance" "example" {
       "sudo mkdir -p /var/www/BlazorForTF",
       "curl -L -o artifact.zip https://github.com/constantine-Z/BlazorForTF/releases/download/testTag/my-asp-net-app.zip",
       "sudo unzip artifact.zip -d /var/www/BlazorForTF",
-      <<-EOF
-      sudo tee /etc/systemd/system/blazorfortf.service <<-EOT
-      [Unit]
-      Description=BlazorForTF Web App
-
-      [Service]
-      WorkingDirectory=/var/www/BlazorForTF
-      ExecStart=/usr/bin/dotnet /var/www/BlazorForTF/BlazorForTF.dll --urls http://*:80
-      Restart=always
-      RestartSec=10
-      SyslogIdentifier=blazorfortf
-
-      [Install]
-      WantedBy=multi-user.target
-      EOT
-      EOF,
+      "echo '[Unit]\nDescription=BlazorForTF Web App\n\n[Service]\nWorkingDirectory=/var/www/BlazorForTF\nExecStart=/usr/bin/dotnet /var/www/BlazorForTF/BlazorForTF.dll --urls \"http://*:80\"\nRestart=always\nRestartSec=10\nSyslogIdentifier=blazorfortf\n\n[Install]\nWantedBy=multi-user.target' | sudo tee /etc/systemd/system/blazorfortf.service",
       "sudo systemctl daemon-reload",
       "sudo systemctl enable blazorfortf",
       "sudo systemctl start blazorfortf"
     ]
   }
+
 
   tags = {
     Name = "RHEL-FreeTier-10.5"
