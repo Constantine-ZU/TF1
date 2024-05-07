@@ -129,7 +129,9 @@ resource "aws_instance" "example" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo dnf install -y dotnet-sdk-8.0"
+      "sudo dnf install -y dotnet-sdk-8.0",
+      "sudo yum install -y nginx",
+      "sudo service nginx start"
     ]
   }
 
