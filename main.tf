@@ -147,7 +147,7 @@ resource "aws_instance" "example" {
       "sudo dnf install -y dotnet-sdk-8.0",
       "sudo yum install -y curl unzip",
       "sudo mkdir -p /var/www/BlazorForTF",
-      "curl -L -o artifact.zip \"https://github.com/constantine-Z/BlazorForTF/actions/runs/8989801482/artifacts/1481247028\"",
+      "curl -L -o artifact.zip \"curl -L -o artifact.zip \"https://github.com/constantine-Z/BlazorForTF/releases/download/testTag/my-asp-net-app.zip\"",
       "sudo unzip artifact.zip -d /var/www/BlazorForTF",
       "sudo yum install -y nginx",
       "sudo service nginx start"
