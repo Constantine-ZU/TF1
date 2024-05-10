@@ -166,6 +166,20 @@ provisioner "remote-exec" {
   ]
 }
 
+  provisioner "local-exec" {
+    command = <<EOT
+      python3 update_godaddy.py
+    EOT
+
+    environment = {
+      NEW_IP                = self.public_ip
+      TF_VAR_godaddy_key    = var.godaddy_key
+      TF_VAR_godaddy_secret_key = var.godaddy_secret_key
+      TF_VAR_godaddy_domain = var.godaddy_domain
+      TF_VAR_godaddy_record_name = var.godaddy_record_name
+    }
+  }
+
   tags = {
     Name = "Ubuntu-Blazor-10-5"
   }

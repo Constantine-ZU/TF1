@@ -16,6 +16,8 @@ env:
   # TF_VAR_secret_key: ${{ secrets.TF_VAR_SECRET_KEY }}
   AWS_ACCESS_KEY_ID: ${{ secrets.TF_VAR_ACCESS_KEY }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
+  TF_VAR_godaddy_key: ${{ secrets.TF_VAR_GODADDY_KEY}}
+  TF_VAR_godaddy_secret_key: ${{ secrets.TF_VAR_GODADDY_SECRET_KEY}}
   command:    ${{ github.event.inputs.command }}
 
  
