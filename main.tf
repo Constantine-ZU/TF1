@@ -150,35 +150,47 @@ resource "aws_instance" "example" {
     host        = self.public_ip
   }
 
-provisioner "remote-exec" {
-  inline = [
-    "sudo apt-get update",
-    "sudo apt-get install -y curl",
-    "sudo mkdir -p /var/www/BlazorForTF",
-    "curl -L -o BlazorForTF.tar https://constantine-z.s3.eu-north-1.amazonaws.com/BlazorForTF.tar",
-    "sudo tar -xf BlazorForTF.tar -C /var/www/BlazorForTF",
-    "sudo chmod +x /var/www/BlazorForTF/BlazorForTF",
-    "sudo chmod -R 755 /var/www/BlazorForTF/wwwroot/",
-    "echo '[Unit]\nDescription=BlazorForTF Web App\n\n[Service]\nWorkingDirectory=/var/www/BlazorForTF\nExecStart=/var/www/BlazorForTF/BlazorForTF --urls \"http://0.0.0.0:80\"\nRestart=always\nRestartSec=10\nSyslogIdentifier=blazorfortf\n\n[Install]\nWantedBy=multi-user.target' | sudo tee /etc/systemd/system/blazorfortf.service",
-    "sudo systemctl daemon-reload",
-    "sudo systemctl enable blazorfortf",
-    "sudo systemctl start blazorfortf"
-  ]
-}
+# provisioner "remote-exec" {
+#   inline = [
+#     "sudo apt-get update",
+#     "sudo apt-get install -y curl",
+#     "sudo mkdir -p /var/www/BlazorForTF",
+#     "curl -L -o BlazorForTF.tar https://constantine-z.s3.eu-north-1.amazonaws.com/BlazorForTF.tar",
+#     "sudo tar -xf BlazorForTF.tar -C /var/www/BlazorForTF",
+#     "sudo chmod +x /var/www/BlazorForTF/BlazorForTF",
+#     "sudo chmod -R 755 /var/www/BlazorForTF/wwwroot/",
+#     "echo '[Unit]\nDescription=BlazorForTF Web App\n\n[Service]\nWorkingDirectory=/var/www/BlazorForTF\nExecStart=/var/www/BlazorForTF/BlazorForTF --urls \"http://0.0.0.0:80\"\nRestart=always\nRestartSec=10\nSyslogIdentifier=blazorfortf\n\n[Install]\nWantedBy=multi-user.target' | sudo tee /etc/systemd/system/blazorfortf.service",
+#     "sudo systemctl daemon-reload",
+#     "sudo systemctl enable blazorfortf",
+#     "sudo systemctl start blazorfortf"
+#   ]
+# }
 
-  provisioner "local-exec" {
-    command = <<EOT
-      python3 update_godaddy.py
-    EOT
+  # provisioner "local-exec" {
+  #   command = <<EOT
+  #     python3 update_godaddy.py
+  #   EOT
 
-    environment = {
-      NEW_IP                = self.public_ip
-      TF_VAR_godaddy_key    = var.godaddy_key
-      TF_VAR_godaddy_secret_key = var.godaddy_secret_key
-      TF_VAR_godaddy_domain = var.godaddy_domain
-      TF_VAR_godaddy_record_name = var.godaddy_record_name
-    }
+  #   environment = {
+  #     NEW_IP                = self.public_ip
+  #     TF_VAR_godaddy_key    = var.godaddy_key
+  #     TF_VAR_godaddy_secret_key = var.godaddy_secret_key
+  #     TF_VAR_godaddy_domain = var.godaddy_domain
+  #     TF_VAR_godaddy_record_name = var.godaddy_record_name
+  #   }
+  # }
+
+provisioner "local-exec" {
+  command = "python3 update_hetzner.py"
+
+  environment = {
+    HETZNER_DNS_KEY   = var.hetzner_dns_key
+    NEW_IP           = aws_instance.example.public_ip
+    HETZNER_ZONE_ID  = "tLLEG6S2qyErGWPvS324um"  # Замените на актуальный zone_id
+    HETZNER_RECORD_ID = "e9e32d0b9efd0df86c35bd7b49db3b4b"  # Замените на актуальный record_id
+    HETZNER_RECORD_NAME = "webaws"
   }
+}
 
   tags = {
     Name = "Ubuntu-Blazor-10-5"

@@ -18,6 +18,7 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
   TF_VAR_godaddy_key: ${{ secrets.TF_VAR_GODADDY_KEY}}
   TF_VAR_godaddy_secret_key: ${{ secrets.TF_VAR_GODADDY_SECRET_KEY}}
+  TF_VAR_hetzner_dns_key: ${{ secrets.TF_VAR_HETZNER_DNS_KEY}}
   command:    ${{ github.event.inputs.command }}
 
  

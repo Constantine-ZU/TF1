@@ -13,12 +13,12 @@ new_ip = os.getenv("NEW_IP")
 # debug
 if godaddy_key:
     print(f"GoDaddy Key (first 5 chars): {godaddy_key[:5]}...")
-    print(f"Length of GoDaddy Secret Key: {len(godaddy_key)}")
+    print(f"Length of GoDaddy Key: {len(godaddy_key)}")
 else:
     print("GoDaddy Key not found.")
 
 if godaddy_secret_key:
-    print(f"GoDaddy Key (first 5 chars): {godaddy_secret_key[:5]}...")
+    print(f"GoDaddy Secret Key (first 5 chars): {godaddy_secret_key[:5]}...")
     print(f"Length of GoDaddy Secret Key: {len(godaddy_secret_key)}")
 else:
     print("GoDaddy Secret Key not found.")

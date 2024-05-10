@@ -34,3 +34,8 @@ variable "godaddy_record_name" {
   description = "The name of the A record to update in the domain"
   default = "webaws"
 }
+
+variable "hetzner_dns_key" {
+  type        = string
+  description = "Hetzner API Secret Key"
+}
