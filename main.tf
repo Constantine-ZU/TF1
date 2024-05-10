@@ -142,6 +142,7 @@ resource "aws_instance" "example" {
   vpc_security_group_ids  = [aws_security_group.launch_wizard.id]
   associate_public_ip_address = true
   private_ip              = "10.10.10.5"
+  iam_instance_profile = "IAM_CERT_ROLE"  # access to s3 Constantine-z-2
 
   connection {
     type        = "ssh"
@@ -152,17 +153,20 @@ resource "aws_instance" "example" {
 
 provisioner "remote-exec" {
   inline = [
-    "sudo apt-get update",
-    "sudo apt-get install -y curl",
-    "sudo mkdir -p /var/www/BlazorForTF",
-    "curl -L -o BlazorForTF.tar https://constantine-z.s3.eu-north-1.amazonaws.com/BlazorForTF.tar",
-    "sudo tar -xf BlazorForTF.tar -C /var/www/BlazorForTF",
-    "sudo chmod +x /var/www/BlazorForTF/BlazorForTF",
-    "sudo chmod -R 755 /var/www/BlazorForTF/wwwroot/",
-    "echo '[Unit]\nDescription=BlazorForTF Web App\n\n[Service]\nWorkingDirectory=/var/www/BlazorForTF\nExecStart=/var/www/BlazorForTF/BlazorForTF --urls \"http://0.0.0.0:80\"\nRestart=always\nRestartSec=10\nSyslogIdentifier=blazorfortf\n\n[Install]\nWantedBy=multi-user.target' | sudo tee /etc/systemd/system/blazorfortf.service",
-    "sudo systemctl daemon-reload",
-    "sudo systemctl enable blazorfortf",
-    "sudo systemctl start blazorfortf"
+      "sudo apt-get update",
+      "sudo apt-get install -y curl awscli",  # Добавляем awscli для загрузки с S3
+      "sudo mkdir -p /etc/ssl/certs",
+      "aws s3 cp s3://constantine-z-2/20240808_43c3e236.pfx /etc/ssl/certs/20240808_43c3e236.pfx",
+      "sudo chmod 600 /etc/ssl/certs/20240808_43c3e236.pfx",  # Безопасные права на сертификат
+      "sudo mkdir -p /var/www/BlazorForTF",
+      "curl -L -o BlazorForTF.tar https://constantine-z.s3.eu-north-1.amazonaws.com/BlazorForTF.tar",
+      "sudo tar -xf BlazorForTF.tar -C /var/www/BlazorForTF",
+      "sudo chmod +x /var/www/BlazorForTF/BlazorForTF",
+      "sudo chmod -R 755 /var/www/BlazorForTF/wwwroot/",
+      "echo '[Unit]\nDescription=BlazorForTF Web App\n\n[Service]\nWorkingDirectory=/var/www/BlazorForTF\nExecStart=/var/www/BlazorForTF/BlazorForTF --urls \"http://0.0.0.0:80\"\nRestart=always\nRestartSec=10\nSyslogIdentifier=blazorfortf\n\n[Install]\nWantedBy=multi-user.target' | sudo tee /etc/systemd/system/blazorfortf.service",
+      "sudo systemctl daemon-reload",
+      "sudo systemctl enable blazorfortf",
+      "sudo systemctl start blazorfortf"
   ]
 }
 
