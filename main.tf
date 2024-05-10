@@ -186,8 +186,8 @@ provisioner "local-exec" {
   environment = {
     HETZNER_DNS_KEY   = var.hetzner_dns_key
     NEW_IP           = aws_instance.example.public_ip
-    HETZNER_ZONE_ID  = "tLLEG6S2qyErGWPvS324um"  # Замените на актуальный zone_id
-    HETZNER_RECORD_ID = "e9e32d0b9efd0df86c35bd7b49db3b4b"  # Замените на актуальный record_id
+    HETZNER_ZONE_ID  = "tLLEG6S2qyErGWPvS324um"  
+    HETZNER_RECORD_ID = "e9e32d0b9efd0df86c35bd7b49db3b4b"  
     HETZNER_RECORD_NAME = "webaws"
   }
 }
