@@ -154,9 +154,7 @@ resource "aws_instance" "example" {
 provisioner "remote-exec" {
   inline = [
     "sudo apt-get update",
-    "sudo apt-get install -y pipx",  
-    "sudo pipx ensurepath",  
-    "sudo pipx install awscli",  
+    "sudo snap install aws-cli --classic",  
     "aws s3 cp s3://constantine-z-2/20240808_43c3e236.pfx ./20240808_43c3e236.pfx",  
     "sudo mv ./20240808_43c3e236.pfx /etc/ssl/certs/20240808_43c3e236.pfx", 
     "sudo chmod 600 /etc/ssl/certs/20240808_43c3e236.pfx",  
