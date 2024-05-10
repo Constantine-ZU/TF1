@@ -150,19 +150,34 @@ resource "aws_instance" "example" {
     host        = self.public_ip
   }
 
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "sudo dnf install -y dotnet-sdk-8.0",
+  #     "sudo yum install -y curl unzip",
+  #     "sudo mkdir -p /var/www/BlazorForTF",
+  #     "curl -L -o artifact.zip https://github.com/constantine-Z/BlazorForTF/releases/download/testTag/my-asp-net-app.zip",
+  #     "sudo unzip artifact.zip -d /var/www/BlazorForTF",
+  #     "echo '[Unit]\nDescription=BlazorForTF Web App\n\n[Service]\nWorkingDirectory=/var/www/BlazorForTF\nExecStart=/usr/bin/dotnet /var/www/BlazorForTF/BlazorForTF.dll --urls \"http://*:80\"\nRestart=always\nRestartSec=10\nSyslogIdentifier=blazorfortf\n\n[Install]\nWantedBy=multi-user.target' | sudo tee /etc/systemd/system/blazorfortf.service",
+  #     "sudo systemctl daemon-reload",
+  #     "sudo systemctl enable blazorfortf",
+  #     "sudo systemctl start blazorfortf"
+  #   ]
+  # }
+
   provisioner "remote-exec" {
     inline = [
-      "sudo dnf install -y dotnet-sdk-8.0",
       "sudo yum install -y curl unzip",
       "sudo mkdir -p /var/www/BlazorForTF",
-      "curl -L -o artifact.zip https://github.com/constantine-Z/BlazorForTF/releases/download/testTag/my-asp-net-app.zip",
+      "curl -L -o artifact.zip https://constantine-z.s3.eu-north-1.amazonaws.com/BlazorForTF.zip",
       "sudo unzip artifact.zip -d /var/www/BlazorForTF",
-      "echo '[Unit]\nDescription=BlazorForTF Web App\n\n[Service]\nWorkingDirectory=/var/www/BlazorForTF\nExecStart=/usr/bin/dotnet /var/www/BlazorForTF/BlazorForTF.dll --urls \"http://*:80\"\nRestart=always\nRestartSec=10\nSyslogIdentifier=blazorfortf\n\n[Install]\nWantedBy=multi-user.target' | sudo tee /etc/systemd/system/blazorfortf.service",
+      "sudo chmod +x /var/www/BlazorForTF/BlazorForTF",
+      "echo '[Unit]\nDescription=BlazorForTF Web App\n\n[Service]\nWorkingDirectory=/var/www/BlazorForTF\nExecStart=/var/www/BlazorForTF/BlazorForTF --urls \"http://0.0.0.0:80\"\nRestart=always\nRestartSec=10\nSyslogIdentifier=blazorfortf\n\n[Install]\nWantedBy=multi-user.target' | sudo tee /etc/systemd/system/blazorfortf.service",
       "sudo systemctl daemon-reload",
       "sudo systemctl enable blazorfortf",
       "sudo systemctl start blazorfortf"
     ]
   }
+
 
 
   tags = {
