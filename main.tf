@@ -135,7 +135,7 @@ resource "aws_security_group" "launch_wizard" {
 }
 
 resource "aws_instance" "example" {
-  ami                     = "ami-03035978b5aeb1274"
+  ami                     = "ami-0705384c0b33c194c"
   instance_type           = "t3.micro"
   key_name                = "pair-key"
   subnet_id               = aws_subnet.default.id
@@ -145,28 +145,16 @@ resource "aws_instance" "example" {
 
   connection {
     type        = "ssh"
-    user        = "ec2-user"
-    private_key = file("${path.module}/pair-key.pem")  # Путь к ключу в контексте GitHub Actions
+    user        = "ubuntu"
+    private_key = file("${path.module}/pair-key.pem")
     host        = self.public_ip
   }
 
-  # provisioner "remote-exec" {
-  #   inline = [
-  #     "sudo dnf install -y dotnet-sdk-8.0",
-  #     "sudo yum install -y curl unzip",
-  #     "sudo mkdir -p /var/www/BlazorForTF",
-  #     "curl -L -o artifact.zip https://github.com/constantine-Z/BlazorForTF/releases/download/testTag/my-asp-net-app.zip",
-  #     "sudo unzip artifact.zip -d /var/www/BlazorForTF",
-  #     "echo '[Unit]\nDescription=BlazorForTF Web App\n\n[Service]\nWorkingDirectory=/var/www/BlazorForTF\nExecStart=/usr/bin/dotnet /var/www/BlazorForTF/BlazorForTF.dll --urls \"http://*:80\"\nRestart=always\nRestartSec=10\nSyslogIdentifier=blazorfortf\n\n[Install]\nWantedBy=multi-user.target' | sudo tee /etc/systemd/system/blazorfortf.service",
-  #     "sudo systemctl daemon-reload",
-  #     "sudo systemctl enable blazorfortf",
-  #     "sudo systemctl start blazorfortf"
-  #   ]
-  # }
-
   provisioner "remote-exec" {
     inline = [
-      "sudo yum install -y curl unzip libicu",
+      "sudo apt-get update",
+      #"sudo apt-get install -y curl unzip libicu",
+      #"sudo setenforce 0", 
       "sudo mkdir -p /var/www/BlazorForTF",
       "curl -L -o artifact.zip https://constantine-z.s3.eu-north-1.amazonaws.com/BlazorForTF.zip",
       "sudo unzip artifact.zip -d /var/www/BlazorForTF",
@@ -179,9 +167,8 @@ resource "aws_instance" "example" {
     ]
   }
 
-
   tags = {
-    Name = "RHEL-FreeTier-10.5"
+    Name = "Ubuntu-Blazor-10-5"
   }
 }
 
