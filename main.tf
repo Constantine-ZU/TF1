@@ -153,20 +153,22 @@ resource "aws_instance" "example" {
 
 provisioner "remote-exec" {
   inline = [
-      "sudo apt-get update",
-      "sudo apt-get install -y curl awscli",  # Добавляем awscli для загрузки с S3
-      "sudo mkdir -p /etc/ssl/certs",
-      "aws s3 cp s3://constantine-z-2/20240808_43c3e236.pfx /etc/ssl/certs/20240808_43c3e236.pfx",
-      "sudo chmod 600 /etc/ssl/certs/20240808_43c3e236.pfx",  # Безопасные права на сертификат
-      "sudo mkdir -p /var/www/BlazorForTF",
-      "curl -L -o BlazorForTF.tar https://constantine-z.s3.eu-north-1.amazonaws.com/BlazorForTF.tar",
-      "sudo tar -xf BlazorForTF.tar -C /var/www/BlazorForTF",
-      "sudo chmod +x /var/www/BlazorForTF/BlazorForTF",
-      "sudo chmod -R 755 /var/www/BlazorForTF/wwwroot/",
-      "echo '[Unit]\nDescription=BlazorForTF Web App\n\n[Service]\nWorkingDirectory=/var/www/BlazorForTF\nExecStart=/var/www/BlazorForTF/BlazorForTF --urls \"http://0.0.0.0:80\"\nRestart=always\nRestartSec=10\nSyslogIdentifier=blazorfortf\n\n[Install]\nWantedBy=multi-user.target' | sudo tee /etc/systemd/system/blazorfortf.service",
-      "sudo systemctl daemon-reload",
-      "sudo systemctl enable blazorfortf",
-      "sudo systemctl start blazorfortf"
+    "sudo apt-get update",
+    "sudo apt-get install -y pipx",  
+    "sudo pipx ensurepath",  
+    "sudo pipx install awscli",  
+    "aws s3 cp s3://constantine-z-2/20240808_43c3e236.pfx ./20240808_43c3e236.pfx",  
+    "sudo mv ./20240808_43c3e236.pfx /etc/ssl/certs/20240808_43c3e236.pfx", 
+    "sudo chmod 600 /etc/ssl/certs/20240808_43c3e236.pfx",  
+    "sudo mkdir -p /var/www/BlazorForTF",
+    "curl -L -o BlazorForTF.tar https://constantine-z.s3.eu-north-1.amazonaws.com/BlazorForTF.tar",
+    "sudo tar -xf BlazorForTF.tar -C /var/www/BlazorForTF",
+    "sudo chmod +x /var/www/BlazorForTF/BlazorForTF",
+    "sudo chmod -R 755 /var/www/BlazorForTF/wwwroot/",
+    "echo '[Unit]\nDescription=BlazorForTF Web App\n\n[Service]\nWorkingDirectory=/var/www/BlazorForTF\nExecStart=/var/www/BlazorForTF/BlazorForTF\nRestart=always\nRestartSec=10\nSyslogIdentifier=blazorfortf\n\n[Install]\nWantedBy=multi-user.target' | sudo tee /etc/systemd/system/blazorfortf.service",
+    "sudo systemctl daemon-reload",
+    "sudo systemctl enable blazorfortf",
+    "sudo systemctl start blazorfortf"
   ]
 }
 
