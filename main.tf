@@ -166,18 +166,18 @@ resource "aws_instance" "example" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo yum install -y curl unzip",
+      "sudo yum install -y curl unzip libicu",
       "sudo mkdir -p /var/www/BlazorForTF",
       "curl -L -o artifact.zip https://constantine-z.s3.eu-north-1.amazonaws.com/BlazorForTF.zip",
       "sudo unzip artifact.zip -d /var/www/BlazorForTF",
       "sudo chmod +x /var/www/BlazorForTF/BlazorForTF",
+      "sudo chmod -R 755 /var/www/BlazorForTF/wwwroot/",
       "echo '[Unit]\nDescription=BlazorForTF Web App\n\n[Service]\nWorkingDirectory=/var/www/BlazorForTF\nExecStart=/var/www/BlazorForTF/BlazorForTF --urls \"http://0.0.0.0:80\"\nRestart=always\nRestartSec=10\nSyslogIdentifier=blazorfortf\n\n[Install]\nWantedBy=multi-user.target' | sudo tee /etc/systemd/system/blazorfortf.service",
       "sudo systemctl daemon-reload",
       "sudo systemctl enable blazorfortf",
       "sudo systemctl start blazorfortf"
     ]
   }
-
 
 
   tags = {
